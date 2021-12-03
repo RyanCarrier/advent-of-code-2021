@@ -55,7 +55,7 @@ pub fn part1(lines: Vec<String>) {
         },
     );
 
-    println!("day1part1:{:?},{}", total, total.depth * total.horizontal);
+    println!("day1part1: {:?},{}", total, total.depth * total.horizontal);
 }
 
 pub fn part2(lines: Vec<String>) {
@@ -81,5 +81,5 @@ pub fn part2(lines: Vec<String>) {
         },
     );
 
-    println!("day1part2:{:?},{}", total, total.depth * total.horizontal);
+    println!("day1part2: {:?},{}", total, total.depth * total.horizontal);
 }

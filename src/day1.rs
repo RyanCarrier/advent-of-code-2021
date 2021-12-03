@@ -3,7 +3,7 @@ pub fn part1(lines: Vec<String>) {
         .windows(2)
         .fold(0, |sum, x| if x[0] < x[1] { sum + 1 } else { sum });
 
-    println!("day1part1:{}", total);
+    println!("day1part1: {}", total);
 }
 
 fn _day1part1_old(lines: Vec<&str>) {
@@ -21,5 +21,5 @@ pub fn part2(lines: Vec<String>) {
     let total = temp
         .windows(4)
         .fold(0, |sum, x| if x[0] < x[3] { sum + 1 } else { sum });
-    println!("day1part2:{}", total);
+    println!("day1part2: {}", total);
 }
