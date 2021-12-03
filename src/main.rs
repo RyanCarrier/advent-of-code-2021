@@ -12,5 +12,6 @@ fn main() {
 
     day3::part1(util::get_test_from_file(3));
     day3::part1(util::get_from_file(3));
+    day3::part2(util::get_test_from_file(3));
     day3::part2(util::get_from_file(3));
 }
