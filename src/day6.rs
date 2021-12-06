@@ -34,9 +34,11 @@ pub fn part1_test(lines: Vec<String>) {
 }
 
 pub fn part2(lines: Vec<String>) {
-    if lines.len() == 0 {
-        println!("day6part2: ")
+    let mut state = import_fish(lines);
+    for _ in 0..256 {
+        state.age();
     }
+    println!("day6part2: {}", state.school())
 }
 
 fn import_fish(lines: Vec<String>) -> State {
