@@ -8,6 +8,19 @@ struct State {
 }
 
 impl State {
+    fn get_sum_unmarked(&self, board_win: usize, current_drawn: usize) -> u64 {
+        let flat: Vec<u64> = self
+            .boards
+            .get(board_win)
+            .unwrap()
+            .into_iter()
+            .flat_map(|x| x.into_iter())
+            .cloned()
+            .collect();
+        let draws = self.draws.get(0..current_drawn).unwrap();
+        let sum_total: u64 = flat.iter().filter(|x| !draws.contains(x)).sum();
+        sum_total
+    }
     fn check_board(&self, draw_depth: usize, board: usize) -> bool {
         let draws = self.draws.get(0..draw_depth).unwrap();
         'x: for x in 0..self.n {
@@ -24,7 +37,7 @@ impl State {
                     continue 'x;
                 }
             }
-            println!("xwin");
+            // println!("xwin, board#{}, x:{}", board, x);
             return true;
         }
         'y: for y in 0..self.n {
@@ -41,7 +54,7 @@ impl State {
                     continue 'y;
                 }
             }
-            println!("ywin");
+            // println!("ywin, board#{}, y:{}", board, y);
             return true;
         }
         return false;
@@ -50,28 +63,61 @@ impl State {
 
 pub fn part1(lines: Vec<String>) {
     let state = import(lines);
-    println!("\tdraws:{:?}", state.draws);
-    println!("\tn:{:?}", state.n);
-    println!("\tboard:{:?}", state.boards);
+
+    let mut board_win: usize = 0;
+    let mut current_drawn: usize = 9999;
     'drawn: for drawn in 0..state.draws.len() {
-        for board in 0..state.boards.len() - 1 {
+        current_drawn = drawn;
+        for board in 0..state.boards.len() {
             if state.check_board(drawn, board) {
-                println!(
-                    "board #{:?} won, draws:{:?}",
-                    board,
-                    state.clone().draws.get(0..drawn).unwrap(),
-                );
+                board_win = board;
                 break 'drawn;
             }
         }
     }
-    println!("day4part1: ")
+    let sum_total = state.get_sum_unmarked(board_win, current_drawn);
+    let last_drawn = state.draws.get(current_drawn - 1).unwrap();
+    //sum of unused multiplied by last drawn
+    println!(
+        "day4part1: Board#{}: {}, sum_total:{}, last_draw:{}",
+        board_win,
+        sum_total * last_drawn,
+        sum_total,
+        last_drawn
+    )
 }
 
 pub fn part2(lines: Vec<String>) {
-    if lines.len() == 0 {
-        println!("day4part2: ")
+    let state = import(lines);
+
+    let mut board_win: usize = 0;
+    let mut current_drawn: usize = 9999;
+    let mut won: Vec<bool> = vec![false; state.boards.clone().len()];
+    'drawn: for drawn in 0..state.draws.len() {
+        current_drawn = drawn;
+        for board in 0..state.boards.len() {
+            if won[board] {
+                continue;
+            }
+            if state.check_board(drawn, board) {
+                board_win = board;
+                won[board] = true;
+                if won.iter().all(|x| *x) {
+                    break 'drawn;
+                }
+            }
+        }
     }
+    let sum_total = state.get_sum_unmarked(board_win, current_drawn);
+    let last_drawn = state.draws.get(current_drawn - 1).unwrap();
+    //sum of unused multiplied by last drawn
+    println!(
+        "day4part2: Board#{}: {}, sum_total:{}, last_draw:{}",
+        board_win,
+        sum_total * last_drawn,
+        sum_total,
+        last_drawn
+    )
 }
 
 fn import<'a>(lines: Vec<String>) -> State {
