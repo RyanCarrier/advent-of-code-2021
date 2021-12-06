@@ -13,6 +13,7 @@ impl State {
     fn school(&self) -> u64 {
         self.fishies.into_iter().sum()
     }
+    #[allow(dead_code)]
     fn to_string(&self) -> String {
         format!("After {} days:\t{:?}", self.days, self.fishies)
     }
