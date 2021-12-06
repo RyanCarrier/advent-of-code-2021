@@ -20,7 +20,7 @@ impl State {
             }
         }
     }
-
+    #[allow(dead_code)]
     fn to_string(&self) -> String {
         let mut total: String = String::new();
         total.push_str("State{");
@@ -95,7 +95,7 @@ impl Line {
         });
         range
     }
-
+    #[allow(dead_code)]
     fn to_string(&self) -> String {
         let mut total: String = String::new();
         total.push_str("Line{\n");
