@@ -6,8 +6,15 @@ struct State {
 }
 
 impl State {
-    fn fill_diagram(&mut self) {
+    fn fill_diagram_straight(&mut self) {
         for line in self.vents.clone().iter().filter(|line| line.is_straight()) {
+            for p in line.range_straight() {
+                self.diagram[p.x as usize][p.y as usize] += 1;
+            }
+        }
+    }
+    fn fill_diagram(&mut self) {
+        for line in self.vents.clone() {
             for p in line.range() {
                 self.diagram[p.x as usize][p.y as usize] += 1;
             }
@@ -48,7 +55,7 @@ impl Line {
         self.p1.x == self.p2.x || self.p1.y == self.p2.y
     }
 
-    fn range(&self) -> Vec<Point> {
+    fn range_straight(&self) -> Vec<Point> {
         if self.p1.x == self.p2.x {
             let r = if self.p1.y < self.p2.y {
                 self.p1.y..self.p2.y + 1
@@ -65,6 +72,29 @@ impl Line {
             r.map(|p| Point { x: p, y: self.p1.y }).collect()
         }
     }
+    fn range(&self) -> Vec<Point> {
+        if self.is_straight() {
+            return self.range_straight();
+        }
+        let x_dir: i32 = if self.p1.x < self.p2.x { 1 } else { -1 };
+        let y_dir: i32 = if self.p1.y < self.p2.y { 1 } else { -1 };
+        let mut x: i32 = self.p1.x as i32;
+        let mut y: i32 = self.p1.y as i32;
+        let mut range: Vec<Point> = vec![];
+        while x != self.p2.x as i32 {
+            range.push(Point {
+                x: x as u16,
+                y: y as u16,
+            });
+            x += x_dir;
+            y += y_dir;
+        }
+        range.push(Point {
+            x: self.p2.x,
+            y: self.p2.y,
+        });
+        range
+    }
 
     fn to_string(&self) -> String {
         let mut total: String = String::new();
@@ -72,7 +102,7 @@ impl Line {
         total.push_str(&format!("\tis_straight:{},\n", self.is_straight()));
         total.push_str(&format!("\tp1{{ x:{}, y:{}}},", self.p1.x, self.p1.y));
         total.push_str(&format!("p2{{ x:{}, y:{}}},\n", self.p2.x, self.p2.y));
-        total.push_str(&format!("RANGE:{:?},\n", self.range()));
+        total.push_str(&format!("RANGE:{:?},\n", self.range_straight()));
         total.push_str("}");
         total
     }
@@ -86,7 +116,7 @@ struct Point {
 
 pub fn part1(lines: Vec<String>) {
     let mut state: State = import(lines);
-    state.fill_diagram();
+    state.fill_diagram_straight();
     let total_over_two = state
         .diagram
         .iter()
@@ -97,9 +127,15 @@ pub fn part1(lines: Vec<String>) {
 }
 
 pub fn part2(lines: Vec<String>) {
-    if lines.len() == 0 {
-        println!("day5part2: ");
-    }
+    let mut state: State = import(lines);
+    state.fill_diagram();
+    let total_over_two = state
+        .diagram
+        .iter()
+        .flat_map(|row| row.iter())
+        .filter(|x| **x > 1)
+        .count();
+    println!("day5part2: {}", total_over_two)
 }
 
 fn import(lines: Vec<String>) -> State {
