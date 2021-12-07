@@ -4,6 +4,7 @@ mod day3;
 mod day4;
 mod day5;
 mod day6;
+mod day7;
 mod util;
 fn main() {
     day1::part1(util::get_from_file(1));
@@ -29,4 +30,8 @@ fn main() {
     day6::part1_test(util::get_test_from_file(6));
     day6::part1(util::get_from_file(6));
     day6::part2(util::get_from_file(6));
+
+    day7::part1(util::get_test_from_file(7));
+    day7::part1(util::get_from_file(7));
+    day7::part2(util::get_from_file(7));
 }
