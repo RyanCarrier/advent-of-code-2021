@@ -73,12 +73,13 @@ impl Heightmap {
     fn find_basins_product(&self) -> usize {
         let max = [self.heights.len() - 1, self.heights[0].len() - 1];
         let low_points = self.get_low();
-        let mut product = 1;
+        let mut basins: Vec<usize> = vec![];
         for l in low_points {
             let mut temp_map = vec![vec![0; self.heights[0].len()]; self.heights.len()];
             let mut to_visit: Vec<[usize; 2]> = vec![l];
             while let Some(point) = to_visit.pop() {
                 let point_val = self.get(point);
+                temp_map[point[0]][point[1]] = 1;
                 for dir in &DIRECTIONS {
                     let point_direction = dir.adjust(point, max);
                     if temp_map[point_direction[0]][point_direction[1]] == 0 {
@@ -94,11 +95,12 @@ impl Heightmap {
                     }
                 }
             }
-            product *= temp_map.iter().fold(0, |basin, x| {
-                basin + x.iter().fold(0, |basin2, y| basin2 + y % 2)
-            });
+            basins.push(temp_map.iter().fold(0, |basin, x| {
+                basin + x.iter().fold(0, |basin2, y| basin2 + *y % 2)
+            }));
         }
-        return product;
+        basins.sort_by(|a, b| b.cmp(a));
+        return basins[0] * basins[1] * basins[2]; //top3.iter().product();
     }
 }
 
