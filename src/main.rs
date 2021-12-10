@@ -1,5 +1,6 @@
 mod day1;
 mod day10;
+mod day11;
 mod day2;
 mod day3;
 mod day4;
@@ -48,10 +49,15 @@ fn main() {
         day9::part1(util::get_from_file(9));
         day9::part2(util::get_test_from_file(9));
         day9::part2(util::get_from_file(9));
+
+        day10::part1(util::get_test_from_file(10));
+        day10::part1(util::get_from_file(10));
+        day10::part2(util::get_test_from_file(10));
+        day10::part2(util::get_from_file(10));
     }
 
-    day10::part1(util::get_test_from_file(10));
-    day10::part1(util::get_from_file(10));
-    day10::part2(util::get_test_from_file(10));
-    day10::part2(util::get_from_file(10));
+    day11::part1(util::get_test_from_file(11));
+    day11::part1(util::get_from_file(11));
+    day11::part2(util::get_test_from_file(11));
+    day11::part2(util::get_from_file(11));
 }
