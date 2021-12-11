@@ -7,7 +7,7 @@ struct State {
 
 impl State {
     fn fill_diagram_straight(&mut self) {
-        for line in self.vents.clone().iter().filter(|line| line.is_straight()) {
+        for line in self.vents.iter().filter(|line| line.is_straight()) {
             for p in line.range_straight() {
                 self.diagram[p.x as usize][p.y as usize] += 1;
             }
@@ -117,24 +117,22 @@ struct Point {
 pub fn part1(lines: Vec<String>) -> String {
     let mut state: State = import(lines);
     state.fill_diagram_straight();
-    let total_over_two = state
-        .diagram
-        .iter()
-        .flat_map(|row| row.iter())
-        .filter(|x| **x > 1)
-        .count();
+    let total_over_two: usize = state.diagram.iter().fold(0, |total, x| {
+        total
+            + x.iter()
+                .fold(0, |total2, y| if *y > 1_u8 { total2 + 1 } else { total2 })
+    });
     total_over_two.to_string()
 }
 
 pub fn part2(lines: Vec<String>) -> String {
     let mut state: State = import(lines);
     state.fill_diagram();
-    let total_over_two = state
-        .diagram
-        .iter()
-        .flat_map(|row| row.iter())
-        .filter(|x| **x > 1)
-        .count();
+    let total_over_two: usize = state.diagram.iter().fold(0, |total, x| {
+        total
+            + x.iter()
+                .fold(0, |total2, y| if *y > 1_u8 { total2 + 1 } else { total2 })
+    });
     total_over_two.to_string()
 }
 
