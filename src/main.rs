@@ -36,7 +36,7 @@ fn main() {
     }
     let day = fns.len();
     // run_specific(fns, day);
-    run_specific(fns, 5);
+    run_bench(fns, 4, 50);
 }
 
 fn run_specific(fns: Vec<[fn(Vec<String>) -> String; 2]>, n: usize) {
@@ -61,6 +61,33 @@ fn run_specific(fns: Vec<[fn(Vec<String>) -> String; 2]>, n: usize) {
     );
     let total_duration = total_start.elapsed();
     println!("Completed in {}ms", total_duration.as_millis());
+}
+
+fn run_bench(fns: Vec<[fn(Vec<String>) -> String; 2]>, n: usize, repeats: usize) {
+    let total_start = Instant::now();
+    let mut list = vec![0; repeats];
+    for i in 0..repeats {
+        list[i] = fns[n - 1][0](util::get_from_file(n)).len();
+    }
+    let duration1 = total_start.elapsed();
+
+    let start2 = Instant::now();
+    for i in 0..repeats {
+        list[i] = fns[n - 1][1](util::get_from_file(n)).len();
+    }
+    let duration2 = start2.elapsed();
+    let total_duration = total_start.elapsed();
+    println!("Part1 in {}ms", duration1.as_millis() / repeats as u128);
+    println!("Part2 in {}ms", duration2.as_millis() / repeats as u128);
+    println!(
+        "Completed in {}ms",
+        total_duration.as_millis() / repeats as u128
+    );
+    println!(
+        "p1 result:{}, p2 result:{}",
+        fns[n - 1][0](util::get_from_file(n)),
+        fns[n - 1][1](util::get_from_file(n))
+    );
 }
 
 fn benchmark(fns: Vec<[fn(Vec<String>) -> String; 2]>) {

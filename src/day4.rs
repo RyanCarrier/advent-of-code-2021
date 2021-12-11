@@ -23,16 +23,11 @@ impl State {
     }
     fn check_board(&self, draw_depth: usize, board: usize) -> bool {
         let draws = self.draws.get(0..draw_depth).unwrap();
+        let board_data = &self.boards[board];
         'x: for x in 0..self.n {
+            let xboard_data = &board_data[x];
             for y in 0..self.n {
-                let board_item = self
-                    .boards
-                    .get(board)
-                    .unwrap()
-                    .get(x)
-                    .unwrap()
-                    .get(y)
-                    .unwrap();
+                let board_item = &xboard_data[y];
                 if !draws.contains(board_item) {
                     continue 'x;
                 }
@@ -42,15 +37,7 @@ impl State {
         }
         'y: for y in 0..self.n {
             for x in 0..self.n {
-                let board_item = self
-                    .boards
-                    .get(board)
-                    .unwrap()
-                    .get(x)
-                    .unwrap()
-                    .get(y)
-                    .unwrap();
-                if !draws.contains(board_item) {
+                if !draws.contains(&board_data[x][y]) {
                     continue 'y;
                 }
             }
