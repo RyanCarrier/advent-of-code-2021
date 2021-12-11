@@ -86,13 +86,13 @@ impl Jun {
     }
 }
 
-pub fn part1(lines: Vec<String>) {
+pub fn part1(lines: Vec<String>) -> String {
     let mut marisa = import(lines);
-    println!("day11part1: {}", marisa.steps(100));
+    (marisa.steps(100)).to_string()
 }
 
-pub fn part2(lines: Vec<String>) {
-    println!("day11part2: {}", import(lines).find_all_flash());
+pub fn part2(lines: Vec<String>) -> String {
+    (import(lines).find_all_flash()).to_string()
 }
 
 fn import(lines: Vec<String>) -> Jun {

@@ -74,17 +74,17 @@ struct Branch {
     value: i64,
 }
 
-pub fn part1(lines: Vec<String>) {
+pub fn part1(lines: Vec<String>) -> String {
     let mut crabs = import(lines, false);
     crabs.converge();
-    println!("day7part1: {}", crabs.branches[1].value)
+    crabs.branches[1].value.to_string()
 }
 
-pub fn part2(lines: Vec<String>) {
+pub fn part2(lines: Vec<String>) -> String {
     let mut crabs = import(lines, true);
     crabs.part2 = true;
     crabs.converge();
-    println!("day7part2: {}", crabs.branches[1].value)
+    crabs.branches[1].value.to_string()
 }
 
 fn import(lines: Vec<String>, part2: bool) -> Crabs {

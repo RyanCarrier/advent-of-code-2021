@@ -44,22 +44,20 @@ impl Navline {
         total
     }
 }
-pub fn part1(lines: Vec<String>) {
+pub fn part1(lines: Vec<String>) -> String {
     let data = import(lines);
-
-    println!(
-        "day10part1: {}",
-        data.iter().fold(0, |total, nl| total + nl.corrupt())
-    )
+    data.iter()
+        .fold(0, |total, nl| total + nl.corrupt())
+        .to_string()
 }
 
-pub fn part2(lines: Vec<String>) {
+pub fn part2(lines: Vec<String>) -> String {
     let data = import(lines);
     let clean_data: Vec<Navline> = data.into_iter().filter(|x| x.corrupt() == 0).collect();
     let mut scores: Vec<usize> = clean_data.iter().map(|x| x.autocomplete()).collect();
     scores.sort();
 
-    println!("day10part2: {}", scores[scores.len() / 2]);
+    (scores[scores.len() / 2]).to_string()
 }
 
 fn import(lines: Vec<String>) -> Vec<Navline> {

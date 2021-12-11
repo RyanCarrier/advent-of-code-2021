@@ -114,7 +114,7 @@ struct Point {
     y: u16,
 }
 
-pub fn part1(lines: Vec<String>) {
+pub fn part1(lines: Vec<String>) -> String {
     let mut state: State = import(lines);
     state.fill_diagram_straight();
     let total_over_two = state
@@ -123,10 +123,10 @@ pub fn part1(lines: Vec<String>) {
         .flat_map(|row| row.iter())
         .filter(|x| **x > 1)
         .count();
-    println!("day5part1: {}", total_over_two)
+    total_over_two.to_string()
 }
 
-pub fn part2(lines: Vec<String>) {
+pub fn part2(lines: Vec<String>) -> String {
     let mut state: State = import(lines);
     state.fill_diagram();
     let total_over_two = state
@@ -135,7 +135,7 @@ pub fn part2(lines: Vec<String>) {
         .flat_map(|row| row.iter())
         .filter(|x| **x > 1)
         .count();
-    println!("day5part2: {}", total_over_two)
+    total_over_two.to_string()
 }
 
 fn import(lines: Vec<String>) -> State {

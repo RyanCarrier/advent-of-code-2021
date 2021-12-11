@@ -1,10 +1,10 @@
 use std::fs;
 
-pub fn get_from_file(day: i32) -> Vec<String> {
+pub fn get_from_file(day: usize) -> Vec<String> {
     get_from_filename(format!("./inputs/day{}.txt", day))
 }
 
-pub fn get_test_from_file(day: i32) -> Vec<String> {
+pub fn get_test_from_file(day: usize) -> Vec<String> {
     get_from_filename(format!("./inputs/day{}test.txt", day))
 }
 

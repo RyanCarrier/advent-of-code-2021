@@ -1,3 +1,5 @@
+use ansi_term::Style;
+use std::time::{Duration, Instant};
 mod day1;
 mod day10;
 mod day11;
@@ -11,56 +13,86 @@ mod day7;
 mod day8;
 mod day9;
 mod util;
+
 fn main() {
-    if false {
-        day1::part1(util::get_from_file(1));
-        day1::part2(util::get_from_file(1));
-
-        day2::part1(util::get_from_file(2));
-        day2::part2(util::get_from_file(2));
-        day2::part2(util::get_test_from_file(2));
-
-        day3::part1(util::get_test_from_file(3));
-        day3::part1(util::get_from_file(3));
-        day3::part2(util::get_test_from_file(3));
-        day3::part2(util::get_from_file(3));
-
-        day4::part1(util::get_test_from_file(4));
-        day4::part1(util::get_from_file(4));
-        day4::part2(util::get_from_file(4));
-
-        day5::part1(util::get_test_from_file(5));
-        day5::part1(util::get_from_file(5));
-        day5::part2(util::get_from_file(5));
-
-        day6::part1_test(util::get_test_from_file(6));
-        day6::part1(util::get_from_file(6));
-        day6::part2(util::get_from_file(6));
-
-        day7::part1(util::get_test_from_file(7));
-        day7::part1(util::get_from_file(7));
-        day7::part2(util::get_from_file(7));
-
-        day8::part1(util::get_test_from_file(8));
-        day8::part1(util::get_from_file(8));
-        day8::part2(util::get_test_from_file(88));
-        day8::part2(util::get_from_file(8));
-
-        day9::part1(util::get_test_from_file(9));
-        day9::part1(util::get_from_file(9));
-        day9::part2(util::get_test_from_file(9));
-        day9::part2(util::get_from_file(9));
-
-        day10::part1(util::get_test_from_file(10));
-        day10::part1(util::get_from_file(10));
-        day10::part2(util::get_test_from_file(10));
-        day10::part2(util::get_from_file(10));
-
-        day11::part1(util::get_test_from_file(11));
-        day11::part1(util::get_from_file(11));
-        day11::part2(util::get_from_file(11));
+    let run_benchmark = !true;
+    let fns = vec![
+        [day1::part1, day1::part2],
+        [day2::part1, day2::part2],
+        [day3::part1, day3::part2],
+        [day4::part1, day4::part2],
+        [day5::part1, day5::part2],
+        [day6::part1, day6::part2],
+        [day7::part1, day7::part2],
+        [day8::part1, day8::part2],
+        [day9::part1, day9::part2],
+        [day10::part1, day10::part2],
+        [day11::part1, day11::part2],
+        // [day12::part1, day12::part2],
+    ];
+    if run_benchmark {
+        benchmark(fns);
+        return;
     }
-    day12::part1(util::get_test_from_file(12));
-    // day12::part1(util::get_from_file(12));
-    // day12::part2(util::get_from_file(12));
+    let day = fns.len();
+    // run_specific(fns, day);
+    run_specific(fns, 5);
+}
+
+fn run_specific(fns: Vec<[fn(Vec<String>) -> String; 2]>, n: usize) {
+    let total_start = Instant::now();
+    println!(
+        "day{}part{}test:\t{}",
+        n,
+        1,
+        fns[n - 1][0](util::get_test_from_file(n))
+    );
+    println!(
+        "day{}part{}:\t{}",
+        n,
+        1,
+        fns[n - 1][0](util::get_from_file(n))
+    );
+    println!(
+        "day{}part{}:\t{}",
+        n,
+        2,
+        fns[n - 1][1](util::get_from_file(n))
+    );
+    let total_duration = total_start.elapsed();
+    println!("Completed in {}ms", total_duration.as_millis());
+}
+
+fn benchmark(fns: Vec<[fn(Vec<String>) -> String; 2]>) {
+    let mut data = vec![vec![String::new()]; fns.len()];
+    for day in 0..fns.len() {
+        data[day] = util::get_from_file(day + 1);
+    }
+    let mut durations = vec![Duration::default(); fns.len()];
+
+    let total_start = Instant::now();
+    for day in 0..fns.len() {
+        let part1 = data[day].clone();
+        let part2 = data[day].clone();
+        let start = Instant::now();
+        fns[day][0](part1);
+        fns[day][1](part2);
+        durations[day] = start.elapsed();
+    }
+    let total_duration = total_start.elapsed();
+    println!("{}", Style::new().bold().paint("Day durations"));
+    for day in 0..fns.len() {
+        println!(
+            "Day {}:\t{:.1}ms",
+            day + 1,
+            durations[day].as_micros() as f64 / 1000 as f64
+        );
+    }
+    println!(
+        "{}",
+        Style::new().bold().paint(format!(
+            "Total:\t{}ms",
+            total_duration.as_millis().to_string()
+        ))
+    );
 }

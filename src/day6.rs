@@ -19,27 +19,28 @@ impl State {
     }
 }
 
-pub fn part1(lines: Vec<String>) {
+pub fn part1(lines: Vec<String>) -> String {
     let mut state = import_fish(lines);
     for _ in 0..80 {
         state.age();
     }
-    println!("day6part1: {}", state.school())
+    state.school().to_string()
 }
-pub fn part1_test(lines: Vec<String>) {
+#[allow(dead_code)]
+pub fn part1_test(lines: Vec<String>) -> String {
     let mut state = import_fish(lines);
     for _ in 0..18 {
         state.age();
     }
-    println!("day6part1_test: {}", state.school())
+    state.school().to_string()
 }
 
-pub fn part2(lines: Vec<String>) {
+pub fn part2(lines: Vec<String>) -> String {
     let mut state = import_fish(lines);
     for _ in 0..256 {
         state.age();
     }
-    println!("day6part2: {}", state.school())
+    state.school().to_string()
 }
 
 fn import_fish(lines: Vec<String>) -> State {

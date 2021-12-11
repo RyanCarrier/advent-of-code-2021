@@ -1,4 +1,4 @@
-pub fn part1(lines: Vec<String>) {
+pub fn part1(lines: Vec<String>) -> String {
     let mid_value = lines.len() / 2;
     let size = lines[0].len();
     let frequency: Vec<u32> = lines.iter().fold(vec![0; size], |mut freq, x| {
@@ -15,12 +15,12 @@ pub fn part1(lines: Vec<String>) {
     }
     let gamma = i64::from_str_radix(&original, 2).unwrap();
     let epsilon = (2_i64).pow(size as u32) - gamma - 1;
-    println!(
-        "day3part1: gamma:{}, epsilon:{}, total:{}",
+    format!(
+        "gamma:{}, epsilon:{}, total:{}",
         gamma,
         epsilon,
-        gamma * epsilon
-    );
+        gamma * epsilon,
+    )
 }
 
 fn cmp<'a>(a: u32, midpoint: f64) -> &'a str {
@@ -30,7 +30,7 @@ fn cmp<'a>(a: u32, midpoint: f64) -> &'a str {
     return "1";
 }
 
-pub fn part2(lines: Vec<String>) {
+pub fn part2(lines: Vec<String>) -> String {
     let size = lines[0].len();
 
     let mut mid_value: f64;
@@ -102,10 +102,10 @@ pub fn part2(lines: Vec<String>) {
     // println!("{}", co2_lines.get(0).unwrap());
     let co2_rating = i64::from_str_radix(co2_lines.get(0).unwrap(), 2).unwrap();
 
-    println!(
-        "day3part2: oxygen:{}, co2:{}, o*x:{}",
+    format!(
+        "oxygen:{}, co2:{}, o*x:{}",
         oxygen_rating,
         co2_rating,
         oxygen_rating * &co2_rating
-    );
+    )
 }

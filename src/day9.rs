@@ -104,15 +104,14 @@ impl Heightmap {
     }
 }
 
-pub fn part1(lines: Vec<String>) {
+pub fn part1(lines: Vec<String>) -> String {
     let data = import(lines);
-    println!("day9part1: {}", data.risk())
+    data.risk().to_string()
 }
 
-pub fn part2(lines: Vec<String>) {
+pub fn part2(lines: Vec<String>) -> String {
     let hmap = import(lines);
-
-    println!("day9part2: {}", hmap.find_basins_product());
+    hmap.find_basins_product().to_string()
 }
 
 fn import(lines: Vec<String>) -> Heightmap {

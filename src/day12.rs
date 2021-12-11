@@ -1,11 +1,11 @@
-pub fn part1(lines: Vec<String>) {
+pub fn part1(lines: Vec<String>) -> String {
     let mut data = import(lines);
-    println!("day12part1: {}", 0);
+    data[0][0].to_string()
 }
 
-pub fn part2(lines: Vec<String>) {
+pub fn part2(lines: Vec<String>) -> String {
     let mut data = import(lines);
-    println!("day12part2: {}", 0);
+    data[0][0].to_string()
 }
 
 fn import(lines: Vec<String>) -> Vec<Vec<usize>> {

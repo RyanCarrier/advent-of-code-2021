@@ -61,7 +61,7 @@ impl State {
     }
 }
 
-pub fn part1(lines: Vec<String>) {
+pub fn part1(lines: Vec<String>) -> String {
     let state = import(lines);
 
     let mut board_win: usize = 0;
@@ -78,8 +78,8 @@ pub fn part1(lines: Vec<String>) {
     let sum_total = state.get_sum_unmarked(board_win, current_drawn);
     let last_drawn = state.draws.get(current_drawn - 1).unwrap();
     //sum of unused multiplied by last drawn
-    println!(
-        "day4part1: Board#{}: {}, sum_total:{}, last_draw:{}",
+    format!(
+        "Board#{}: {}, sum_total:{}, last_draw:{}",
         board_win,
         sum_total * last_drawn,
         sum_total,
@@ -87,7 +87,7 @@ pub fn part1(lines: Vec<String>) {
     )
 }
 
-pub fn part2(lines: Vec<String>) {
+pub fn part2(lines: Vec<String>) -> String {
     let state = import(lines);
 
     let mut board_win: usize = 0;
@@ -111,12 +111,12 @@ pub fn part2(lines: Vec<String>) {
     let sum_total = state.get_sum_unmarked(board_win, current_drawn);
     let last_drawn = state.draws.get(current_drawn - 1).unwrap();
     //sum of unused multiplied by last drawn
-    println!(
-        "day4part2: Board#{}: {}, sum_total:{}, last_draw:{}",
+    format!(
+        "Board#{}: {}, sum_total:{}, last_draw:{}",
         board_win,
         sum_total * last_drawn,
         sum_total,
-        last_drawn
+        last_drawn,
     )
 }
 

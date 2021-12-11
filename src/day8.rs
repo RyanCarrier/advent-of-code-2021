@@ -32,7 +32,7 @@ impl Digit {
     }
 }
 
-pub fn part1(lines: Vec<String>) {
+pub fn part1(lines: Vec<String>) -> String {
     let source = import(lines);
     let total = source.iter().fold(0, |total, line| {
         total
@@ -44,10 +44,10 @@ pub fn part1(lines: Vec<String>) {
                 .count()
     });
 
-    println!("day8part1: {}", total)
+    total.to_string()
 }
 
-pub fn part2(lines: Vec<String>) {
+pub fn part2(lines: Vec<String>) -> String {
     let source = import(lines);
     let sectors_used: &[Vec<usize>; 10] = &[
         vec![0, 1, 2, 4, 5, 6],
@@ -133,7 +133,7 @@ pub fn part2(lines: Vec<String>) {
         // println!("{:?} : {}", line[1], number);
         sum_total += number.parse::<usize>().unwrap();
     }
-    println!("day8part2: {}", sum_total)
+    sum_total.to_string()
 }
 
 fn import(lines: Vec<String>) -> Vec<Vec<Vec<String>>> {

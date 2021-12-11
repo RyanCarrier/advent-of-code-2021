@@ -36,7 +36,7 @@ impl Step {
     }
 }
 
-pub fn part1(lines: Vec<String>) {
+pub fn part1(lines: Vec<String>) -> String {
     let commands: Vec<Step> = lines.iter().map(|x| Step::from(x.to_string())).collect();
     let total = commands.iter().fold(
         State {
@@ -55,10 +55,10 @@ pub fn part1(lines: Vec<String>) {
         },
     );
 
-    println!("day1part1: {:?},{}", total, total.depth * total.horizontal);
+    return format!("{:?},{}", total, total.depth * total.horizontal);
 }
 
-pub fn part2(lines: Vec<String>) {
+pub fn part2(lines: Vec<String>) -> String {
     let commands: Vec<Step> = lines.iter().map(|x| Step::from(x.to_string())).collect();
     let total = commands.iter().fold(
         State {
@@ -81,5 +81,5 @@ pub fn part2(lines: Vec<String>) {
         },
     );
 
-    println!("day1part2: {:?},{}", total, total.depth * total.horizontal);
+    format!("{:?},{}", total, total.depth * total.horizontal)
 }
