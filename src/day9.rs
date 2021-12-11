@@ -16,10 +16,10 @@ static DIRECTIONS: [Direction; 4] = [
 impl Direction {
     fn adjust(&self, current: [usize; 2], max: [usize; 2]) -> [usize; 2] {
         match self {
-            Direction::Left => [if current[0] == 0 { 0 } else { current[0] - 1 }, current[1]],
-            Direction::Up => [current[0], cmp::min(current[1] + 1, max[1])],
-            Direction::Right => [cmp::min(current[0] + 1, max[0]), current[1]],
-            Direction::Down => [current[0], if current[1] == 0 { 0 } else { current[1] - 1 }],
+            Direction::Left => [0.max(current[0] - 1), current[1]],
+            Direction::Up => [current[0], (current[1] + 1).min(max[1])],
+            Direction::Right => [(current[0] + 1).min(max[0]), current[1]],
+            Direction::Down => [current[0], 0.max(current[1] - 1)],
         }
     }
 }
