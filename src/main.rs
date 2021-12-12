@@ -28,7 +28,7 @@ fn main() {
         [day9::part1, day9::part2],
         [day10::part1, day10::part2],
         [day11::part1, day11::part2],
-        // [day12::part1, day12::part2],
+        [day12::part1, day12::part2],
     ];
     if run_benchmark {
         benchmark(fns);
@@ -40,29 +40,38 @@ fn main() {
 }
 
 fn run_specific(fns: Vec<[fn(Vec<String>) -> String; 2]>, n: usize) {
-    let total_start = Instant::now();
+    let start = Instant::now();
     println!(
         "day{}part{}test:\t{}",
         n,
         1,
         fns[n - 1][0](util::get_test_from_file(n))
     );
+    let test_duration = start.elapsed();
     println!(
         "day{}part{}:\t{}",
         n,
         1,
         fns[n - 1][0](util::get_from_file(n))
     );
+    let part1_duration = start.elapsed() - test_duration;
     println!(
         "day{}part{}:\t{}",
         n,
         2,
         fns[n - 1][1](util::get_from_file(n))
     );
-    let total_duration = total_start.elapsed();
-    println!("Completed in {}ms", total_duration.as_millis());
+    let total_duration = start.elapsed();
+    println!(
+        "Completed in {}ms\t(p1t:{}ms,p1:{}ms,p2:{}ms)",
+        total_duration.as_millis(),
+        test_duration.as_millis(),
+        part1_duration.as_millis(),
+        (total_duration - test_duration - part1_duration).as_millis()
+    );
 }
 
+#[allow(dead_code)]
 fn run_bench(fns: Vec<[fn(Vec<String>) -> String; 2]>, n: usize, repeats: usize) {
     let total_start = Instant::now();
     let mut list = vec![0; repeats];

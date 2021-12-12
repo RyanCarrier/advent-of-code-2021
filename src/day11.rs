@@ -1,5 +1,7 @@
 use std::ops::Add;
 
+use crate::util;
+
 static MININDEX: usize = 0;
 static MAXINDEX: usize = 9;
 
@@ -28,8 +30,8 @@ impl Jun {
         self.octy
             .iter_mut()
             .for_each(|v| v.iter_mut().for_each(|power| *power += 1));
-        for x in MININDEX..MAXINDEX + 1 {
-            for y in MININDEX..MAXINDEX + 1 {
+        for x in MININDEX..=MAXINDEX {
+            for y in MININDEX..=MAXINDEX {
                 if self.octy[x][y] > 9 {
                     self.ryans.push([x, y]);
                 }
@@ -48,22 +50,20 @@ impl Jun {
     }
 
     fn increase_around(&mut self, point: [usize; 2]) {
-        for dx in -1..=1 {
-            for dy in -1..=1 {
-                self.increase(point, [dx, dy]);
-            }
-        }
+        util::TRANSFORMS
+            .iter()
+            .for_each(|t| self.increase(point, *t));
     }
-    fn increase(&mut self, point: [usize; 2], transform: [i32; 2]) {
+    fn increase(&mut self, point: [usize; 2], transform: [isize; 2]) {
         if transform == [0, 0] {
             return;
         }
-        let x: i32 = point[0] as i32 + transform[0];
-        let y: i32 = point[1] as i32 + transform[1];
-        if x <= MAXINDEX as i32
-            && x >= MININDEX as i32
-            && y <= MAXINDEX as i32
-            && y >= MININDEX as i32
+        let x: isize = point[0] as isize + transform[0];
+        let y: isize = point[1] as isize + transform[1];
+        if x <= MAXINDEX as isize
+            && x >= MININDEX as isize
+            && y <= MAXINDEX as isize
+            && y >= MININDEX as isize
         {
             self.octy[x as usize][y as usize] += 1;
             if self.octy[x as usize][y as usize] == 10 {
