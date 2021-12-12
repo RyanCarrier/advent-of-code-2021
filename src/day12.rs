@@ -1,61 +1,48 @@
 #[derive(Clone)]
 struct Path {
-    path: Vec<usize>,
+    path: Vec<bool>,
     small_twice: bool,
 }
-impl Path {
-    fn contains(&self, node: &usize) -> bool {
-        self.path.contains(node)
-    }
-}
 
-struct Vertex {
-    is_small: bool,
-    arcs: Vec<usize>,
-}
 struct Graph {
-    verticies: Vec<Vertex>,
+    arc_list: Vec<Vec<u32>>,
+    small: Vec<bool>,
 }
 
 impl Graph {
-    fn find_paths(&self, allow_small_twice: bool) -> usize {
-        let node = &self.verticies[0];
-        let current_path = Path {
-            path: vec![0],
+    fn find_paths(&self, allow_small_twice: bool) -> u32 {
+        let node = &self.arc_list[0];
+        let mut current_path = Path {
+            path: vec![false; self.arc_list.len()],
             small_twice: !allow_small_twice,
         };
-        self.path_continue(node, &current_path)
+        current_path.path[0] = true;
+        let mut total = 0;
+        self.path_continue(node, &current_path, &mut total);
+        total
     }
 
-    fn path_continue(&self, node: &Vertex, path: &Path) -> usize {
-        let mut all_paths = 0;
-        for arc in &node.arcs {
+    fn path_continue(&self, node_arcs: &Vec<u32>, path: &Path, total: &mut u32) {
+        for arc in node_arcs {
             if *arc == 1 {
-                all_paths += 1;
+                *total += 1;
                 continue;
             }
-            if self.verticies[*arc].is_small {
-                if path.contains(&arc) && path.small_twice {
+            if self.small[*arc as usize] {
+                if path.small_twice && path.path[*arc as usize] {
                     continue;
                 }
                 let mut arcpath = path.clone();
-                if arcpath.contains(&arc) {
+                if path.path[*arc as usize] {
                     arcpath.small_twice = true;
+                } else {
+                    arcpath.path[*arc as usize] = true
                 }
-                arcpath.path.push(*arc);
-                all_paths += self.path_continue(&self.verticies[*arc], &arcpath);
+                self.path_continue(&self.arc_list[*arc as usize], &arcpath, total);
             } else {
-                all_paths += self.path_continue(&self.verticies[*arc], &path);
+                self.path_continue(&self.arc_list[*arc as usize], &path, total);
             }
         }
-        all_paths
-    }
-    #[allow(dead_code)]
-    fn print(&self) {
-        self.verticies
-            .iter()
-            .enumerate()
-            .for_each(|(s, v)| v.arcs.iter().for_each(|a| println!("{}->{}", s, a)))
     }
 }
 
@@ -66,22 +53,13 @@ pub fn part1(lines: Vec<String>) -> String {
 
 pub fn part2(lines: Vec<String>) -> String {
     let data = import(lines);
-    //123086
     return data.find_paths(true).to_string();
 }
 
 fn import(lines: Vec<String>) -> Graph {
     let mut graph = Graph {
-        verticies: vec![
-            Vertex {
-                is_small: true,
-                arcs: vec![],
-            },
-            Vertex {
-                is_small: true,
-                arcs: vec![],
-            },
-        ],
+        arc_list: vec![vec![], vec![]],
+        small: vec![true, true],
     };
     let mut map: Vec<&str> = vec!["start", "end"];
     lines.iter().for_each(|line| {
@@ -90,10 +68,8 @@ fn import(lines: Vec<String>) -> Graph {
         let v1n = if map.contains(&v1) {
             map.iter().position(|x| *x == v1).unwrap()
         } else {
-            graph.verticies.push(Vertex {
-                arcs: vec![],
-                is_small: &v1 != &v1.to_uppercase(),
-            });
+            graph.arc_list.push(vec![]);
+            graph.small.push(&v1 != &v1.to_uppercase());
             map.push(v1);
             map.len() - 1
         };
@@ -101,18 +77,16 @@ fn import(lines: Vec<String>) -> Graph {
         let v2n = if map.contains(&v2) {
             map.iter().position(|x| *x == v2).unwrap()
         } else {
-            graph.verticies.push(Vertex {
-                arcs: vec![],
-                is_small: &v2 != &v2.to_uppercase(),
-            });
+            graph.arc_list.push(vec![]);
+            graph.small.push(&v2 != &v2.to_uppercase());
             map.push(v2);
             map.len() - 1
         };
         if v2n != 0 {
-            graph.verticies[v1n].arcs.push(v2n);
+            graph.arc_list[v1n].push(v2n as u32);
         }
         if v1n != 0 {
-            graph.verticies[v2n].arcs.push(v1n);
+            graph.arc_list[v2n].push(v1n as u32);
         }
     });
     graph

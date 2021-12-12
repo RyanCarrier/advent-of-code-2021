@@ -5,6 +5,7 @@ import (
 	"sort"
 	"strconv"
 	"strings"
+	"time"
 )
 
 type Heights [][]int
@@ -106,6 +107,7 @@ func (h *Heights) getNeighbours(p Point) (validPoints []Point) {
 }
 
 func main() {
+	now := time.Now()
 	basin := importData()
 	fmt.Println("part1:", basin.getRisk())
 	basinSizes := basin.getBasinSizes()
@@ -115,6 +117,7 @@ func main() {
 		product *= size
 	}
 	fmt.Println("part2:", product)
+	fmt.Printf("took %dms\n", time.Since(now).Milliseconds())
 
 }
 

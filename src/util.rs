@@ -12,7 +12,7 @@ pub static TRANSFORMS: [[isize; 2]; 8] = [
 pub fn get_from_file(day: usize) -> Vec<String> {
     get_from_filename(format!("./inputs/day{}.txt", day))
 }
-
+#[allow(dead_code)]
 pub fn get_test_from_file(day: usize) -> Vec<String> {
     get_from_filename(format!("./inputs/day{}test.txt", day))
 }

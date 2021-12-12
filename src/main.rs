@@ -36,7 +36,7 @@ fn main() {
     }
     let day = fns.len();
     run_specific(fns, day);
-    // run_bench(fns, 8, 200);
+    // run_bench(fns, 5, 1000);
 }
 
 fn run_specific(fns: Vec<[fn(Vec<String>) -> String; 2]>, n: usize) {
@@ -63,11 +63,11 @@ fn run_specific(fns: Vec<[fn(Vec<String>) -> String; 2]>, n: usize) {
     );
     let total_duration = start.elapsed();
     println!(
-        "Completed in {}ms\t(p1t:{}ms,p1:{}ms,p2:{}ms)",
+        "Completed in {}ms\t(p1t:{}μs,p1:{}μs,p2:{}μs)",
         total_duration.as_millis(),
-        test_duration.as_millis(),
-        part1_duration.as_millis(),
-        (total_duration - test_duration - part1_duration).as_millis()
+        test_duration.as_micros(),
+        part1_duration.as_micros(),
+        (total_duration - test_duration - part1_duration).as_micros()
     );
 }
 
@@ -86,11 +86,11 @@ fn run_bench(fns: Vec<[fn(Vec<String>) -> String; 2]>, n: usize, repeats: usize)
     }
     let duration2 = start2.elapsed();
     let total_duration = total_start.elapsed();
-    println!("Part1 in {}ms", duration1.as_millis() / repeats as u128);
-    println!("Part2 in {}ms", duration2.as_millis() / repeats as u128);
+    println!("Part1 in {}μs", duration1.as_micros() / repeats as u128);
+    println!("Part2 in {}μs", duration2.as_micros() / repeats as u128);
     println!(
-        "Completed in {}ms",
-        total_duration.as_millis() / repeats as u128
+        "Completed in {}μs",
+        total_duration.as_micros() / repeats as u128
     );
     println!(
         "p1 result:{}, p2 result:{}",

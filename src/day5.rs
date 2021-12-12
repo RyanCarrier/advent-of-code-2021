@@ -6,6 +6,42 @@ struct State {
 }
 
 impl State {
+    fn cheat_get_fill_over(&mut self) -> usize {
+        let mut field = vec![vec![false; self.diagram.len()]; self.diagram[0].len()];
+        let mut total = 0;
+        for line in &self.vents {
+            for p in line.range() {
+                if field[p[0]][p[1]] {
+                    continue;
+                }
+                if self.diagram[p[0]][p[1]] == 1 {
+                    total += 1;
+                    field[p[0]][p[1]] = true;
+                }
+                self.diagram[p[0]][p[1]] += 1;
+            }
+        }
+        total
+    }
+    fn cheat_get_fill_over_straight(&mut self) -> usize {
+        let mut field = vec![vec![false; self.diagram.len()]; self.diagram[0].len()];
+        let mut total = 0;
+        for line in self.vents.iter().filter(|line| line.is_straight()) {
+            for p in line.range_straight() {
+                if field[p[0]][p[1]] {
+                    continue;
+                }
+                if self.diagram[p[0]][p[1]] == 1 {
+                    total += 1;
+                    field[p[0]][p[1]] = true;
+                }
+                self.diagram[p[0]][p[1]] += 1;
+            }
+        }
+        total
+    }
+
+    #[allow(dead_code)]
     fn diagram_over_one(&self) -> usize {
         let mut total_over_two = 0;
         self.diagram.iter().for_each(|v| {
@@ -17,6 +53,7 @@ impl State {
         });
         total_over_two
     }
+    #[allow(dead_code)]
     fn fill_diagram_straight(&mut self) {
         for line in self.vents.iter().filter(|line| line.is_straight()) {
             for p in line.range_straight() {
@@ -24,6 +61,7 @@ impl State {
             }
         }
     }
+    #[allow(dead_code)]
     fn fill_diagram(&mut self) {
         for line in &self.vents {
             for p in line.range() {
@@ -68,19 +106,25 @@ impl Line {
 
     fn range_straight(&self) -> Vec<[usize; 2]> {
         if self.p1[0] == self.p2[0] {
-            let r = if self.p1[1] < self.p2[1] {
-                self.p1[1]..self.p2[1] + 1
+            if self.p1[1] < self.p2[1] {
+                (self.p1[1]..self.p2[1] + 1)
+                    .map(|y| [self.p1[0], y])
+                    .collect()
             } else {
-                self.p2[1]..self.p1[1] + 1
-            };
-            r.map(|p| [self.p1[0], p]).collect()
+                (self.p2[1]..self.p1[1] + 1)
+                    .map(|y| [self.p1[0], y])
+                    .collect()
+            }
         } else {
-            let r = if self.p1[0] < self.p2[0] {
-                self.p1[0]..self.p2[0] + 1
+            if self.p1[0] < self.p2[0] {
+                (self.p1[0]..self.p2[0] + 1)
+                    .map(|p| [p, self.p1[1]])
+                    .collect()
             } else {
-                self.p2[0]..self.p1[0] + 1
-            };
-            r.map(|p| [p, self.p1[1]]).collect()
+                (self.p2[0]..self.p1[0] + 1)
+                    .map(|p| [p, self.p1[1]])
+                    .collect()
+            }
         }
     }
     fn range(&self) -> Vec<[usize; 2]> {
@@ -92,12 +136,13 @@ impl Line {
         let mut x: i32 = self.p1[0] as i32;
         let mut y: i32 = self.p1[1] as i32;
         let mut range: Vec<[usize; 2]> = vec![];
+
         while x != self.p2[0] as i32 {
             range.push([x as usize, y as usize]);
             x += x_dir;
             y += y_dir;
         }
-        range.push([self.p2[0], self.p2[1]]);
+        range.push(self.p2);
         range
     }
     #[allow(dead_code)]
@@ -115,14 +160,18 @@ impl Line {
 
 pub fn part1(lines: Vec<String>) -> String {
     let mut state: State = import(lines);
-    state.fill_diagram_straight();
-    state.diagram_over_one().to_string()
+    state.cheat_get_fill_over_straight().to_string()
+    //old method
+    // state.fill_diagram_straight();
+    // state.diagram_over_one().to_string()
 }
 
 pub fn part2(lines: Vec<String>) -> String {
     let mut state: State = import(lines);
-    state.fill_diagram();
-    state.diagram_over_one().to_string()
+    state.cheat_get_fill_over().to_string()
+    //old method
+    // state.fill_diagram();
+    // state.diagram_over_one().to_string()
 }
 
 fn import(lines: Vec<String>) -> State {
