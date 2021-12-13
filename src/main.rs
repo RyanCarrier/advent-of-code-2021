@@ -37,8 +37,8 @@ fn main() {
         return;
     }
     let day = fns.len();
-    run_specific(fns, day);
-    // run_bench(fns, 5, 1000);
+    // run_specific(fns, day);
+    run_bench(fns, 12, 2000);
 }
 
 fn run_specific(fns: Vec<[fn(Vec<String>) -> String; 2]>, n: usize) {
@@ -75,19 +75,21 @@ fn run_specific(fns: Vec<[fn(Vec<String>) -> String; 2]>, n: usize) {
 
 #[allow(dead_code)]
 fn run_bench(fns: Vec<[fn(Vec<String>) -> String; 2]>, n: usize, repeats: usize) {
+    let input = util::get_from_file(n);
+    let inputs: Vec<Vec<String>> = (0..repeats).map(|_| input.clone()).collect();
     let total_start = Instant::now();
-    let mut list = vec![0; repeats];
-    for i in 0..repeats {
-        list[i] = fns[n - 1][0](util::get_from_file(n)).len();
+    for input in inputs {
+        let _ = fns[n - 1][0](input);
     }
     let duration1 = total_start.elapsed();
 
+    let inputs: Vec<Vec<String>> = (0..repeats).map(|_| input.clone()).collect();
     let start2 = Instant::now();
-    for i in 0..repeats {
-        list[i] = fns[n - 1][1](util::get_from_file(n)).len();
+    for input in inputs {
+        let _ = fns[n - 1][1](input);
     }
     let duration2 = start2.elapsed();
-    let total_duration = total_start.elapsed();
+    let total_duration = duration1 + duration2;
     println!("Part1 in {}μs", duration1.as_micros() / repeats as u128);
     println!("Part2 in {}μs", duration2.as_micros() / repeats as u128);
     println!(
@@ -96,8 +98,8 @@ fn run_bench(fns: Vec<[fn(Vec<String>) -> String; 2]>, n: usize, repeats: usize)
     );
     println!(
         "p1 result:{}, p2 result:{}",
-        fns[n - 1][0](util::get_from_file(n)),
-        fns[n - 1][1](util::get_from_file(n))
+        fns[n - 1][0](input.clone()),
+        fns[n - 1][1](input.clone())
     );
 }
 
