@@ -37,8 +37,8 @@ fn main() {
         return;
     }
     let day = fns.len();
-    // run_specific(fns, day);
-    run_bench(fns, 12, 2000);
+    run_specific(fns, day);
+    // run_bench(fns, 13, 2000);
 }
 
 fn run_specific(fns: Vec<[fn(Vec<String>) -> String; 2]>, n: usize) {

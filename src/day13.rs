@@ -1,4 +1,4 @@
-use std::collections::HashSet;
+use std::{cmp::Ordering, collections::HashSet};
 
 struct Day13 {
     folds: Vec<Fold>,
@@ -61,47 +61,48 @@ impl Day13Attempt3 {
     }
 
     fn fold(&mut self) {
-        let fold = self.folds[0];
-        self.folds.remove(0);
+        let fold = self.folds.remove(0);
         let mutator = fold.n * 2;
-        if fold.x {
-            self.points.retain(|p| p[0] != fold.n);
-            self.points.iter_mut().for_each(|p| {
-                if p[0] > fold.n {
-                    p[0] = mutator - p[0]
-                }
-            });
-        } else {
-            self.points.retain(|p| p[1] != fold.n);
-            self.points.iter_mut().for_each(|p| {
-                if p[1] > fold.n {
-                    p[1] = mutator - p[1]
-                }
-            });
-        }
+        self.points
+            .retain(|p| (fold.x && p[0] != fold.n) || (!fold.x && p[1] != fold.n));
+        self.points.iter_mut().for_each(|p| {
+            if fold.x && p[0] > fold.n {
+                p[0] = mutator - p[0]
+            } else if !fold.x && p[1] > fold.n {
+                p[1] = mutator - p[1]
+            }
+        });
     }
 
     #[allow(dead_code)]
-    fn to_string_transformed(&self) -> String {
-        let max_index = self.points.iter().fold([0, 0], |mut max, p| {
-            if p[0] > max[0] {
-                max[0] = p[0];
-            }
-            if p[1] > max[1] {
-                max[1] = p[1]
-            }
-            max
-        });
-
+    fn to_string_transformed(&mut self) -> String {
         let mut ret = String::new();
+        self.points.sort_by(|p1, p2| {
+            if p1[1] < p2[1] || (p1[1] == p2[1] && p1[0] < p2[0]) {
+                return Ordering::Greater;
+            } else if p1[0] == p2[0] && p1[1] == p2[1] {
+                return Ordering::Equal;
+            }
+            Ordering::Less
+        });
+        self.points.dedup();
+        let max_index = self
+            .points
+            .iter()
+            .fold([0, 0], |max, p| [max[0].max(p[0]), max[1].max(p[1])]);
+        let mut point = self.points.pop().unwrap();
         for y in 0..=max_index[1] {
             ret.push('\n');
             for x in 0..=max_index[0] {
-                ret.push(if self.points.contains(&[x, y]) {
-                    'x'
+                if point[0] == x && point[1] == y {
+                    ret.push('#');
+                    point = match self.points.pop() {
+                        Some(p) => p,
+                        None => return ret,
+                    };
                 } else {
-                    ' '
-                });
+                    ret.push(' ');
+                }
             }
         }
         return ret;
