@@ -1,5 +1,5 @@
 use std::{cmp::Ordering, collections::HashSet};
-
+#[allow(dead_code)]
 struct Day13 {
     folds: Vec<Fold>,
     grid: Vec<Vec<bool>>,
@@ -108,11 +108,12 @@ impl Day13Attempt3 {
         return ret;
     }
 }
-
+#[allow(dead_code)]
 struct Day13Attempt2 {
     points: HashSet<[usize; 2]>,
     folds: Vec<Fold>,
 }
+#[allow(dead_code)]
 impl Day13Attempt2 {
     fn fold_first(&mut self) -> usize {
         self.fold();
@@ -178,7 +179,7 @@ impl Day13Attempt2 {
         return ret;
     }
 }
-
+#[allow(dead_code)]
 impl Day13 {
     fn fold_first(&mut self) -> usize {
         self.fold(self.folds[0]);
@@ -246,7 +247,7 @@ impl Day13 {
         return ret;
     }
 }
-
+#[allow(dead_code)]
 pub fn part1_old_old(lines: Vec<String>) -> String {
     let mut data = import(lines);
     let mut p1 = String::from("part1:");
@@ -257,7 +258,7 @@ pub fn part1_old_old(lines: Vec<String>) -> String {
     p1.push('\n');
     p1
 }
-
+#[allow(dead_code)]
 pub fn part1_old(lines: Vec<String>) -> String {
     let mut data = import_attempt2(lines);
 
@@ -280,7 +281,7 @@ pub fn part1(lines: Vec<String>) -> String {
     p1
     // String::from("NA - part 1")
 }
-pub fn part2(lines: Vec<String>) -> String {
+pub fn part2(_: Vec<String>) -> String {
     String::from("NA - part 1")
 }
 
