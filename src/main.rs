@@ -67,11 +67,11 @@ fn run_specific(fns: Vec<[fn(Vec<String>) -> String; 2]>, n: usize) {
     );
     let total_duration = start.elapsed();
     println!(
-        "Completed in {}ms\t(p1t:{}μs,p1:{}μs,p2:{}μs)",
-        total_duration.as_millis(),
-        test_duration.as_micros(),
-        part1_duration.as_micros(),
-        (total_duration - test_duration - part1_duration).as_micros()
+        "Completed in {}\t(p1t:{}, p1:{}, p2:{})",
+        util::format_duration(total_duration),
+        util::format_duration(test_duration),
+        util::format_duration(part1_duration),
+        util::format_duration(total_duration - test_duration - part1_duration)
     );
 }
 

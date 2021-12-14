@@ -1,4 +1,4 @@
-use std::fs;
+use std::{fs, time::Duration};
 pub static TRANSFORMS: [[isize; 2]; 8] = [
     [-1, -1],
     [-1, 0],
@@ -27,4 +27,16 @@ fn get_from_filename(filename: String) -> Vec<String> {
     lines
 }
 
+pub fn format_duration(d: Duration) -> String {
+    if d.as_millis() > 1000 {
+        return format!("{:.1}s", d.as_millis() as f64 / 1000 as f64);
+    }
+    if d.as_micros() > 1000 {
+        return format!("{:.1}ms", d.as_micros() as f64 / 1000 as f64);
+    }
+    if d.as_nanos() > 1000 {
+        return format!("{:.1}μs", d.as_nanos() as f64 / 1000 as f64);
+    }
+    format!("{}ns", d.as_nanos())
+}
 // pub fn get_around(point: [usize; 2], diagonal: bool, minmax: [usize; 2]) -> Vec<[usize; 2]> {}
