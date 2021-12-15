@@ -1,5 +1,4 @@
 use core::panic;
-use std::collections::HashSet;
 
 #[derive(Debug, Clone)]
 struct State {
@@ -17,25 +16,21 @@ impl State {
             .fold(0, |sum, x| sum + *x as u64);
         sum_total
     }
-    fn check_board(&self, board: usize, draws: &HashSet<u8>) -> bool {
+    fn check_board(&self, board: usize, draws: &Vec<u8>) -> bool {
         'x: for x in 0..self.n {
             for y in 0..self.n {
-                let board_item = &self.boards[board][x * self.n + y];
-                if !draws.contains(board_item) {
+                if !draws.contains(&self.boards[board][x * self.n + y]) {
                     continue 'x;
                 }
             }
-            // println!("xwin, board#{}, x:{}", board, x);
             return true;
         }
         'y: for y in 0..self.n {
             for x in 0..self.n {
-                let board_item = &self.boards[board][x * self.n + y];
-                if !draws.contains(board_item) {
+                if !draws.contains(&self.boards[board][x * self.n + y]) {
                     continue 'y;
                 }
             }
-            // println!("ywin, board#{}, y:{}", board, y);
             return true;
         }
         return false;
@@ -46,10 +41,10 @@ pub fn part1(lines: Vec<String>) -> String {
     let state = import(lines);
     let mut board_win: usize = 0;
     let mut current_drawn: usize = 9999;
-    let mut drawn_set = HashSet::new();
+    let mut drawn_set = vec![];
     'drawn: for drawn in 0..state.draws.len() {
         current_drawn = drawn;
-        drawn_set.insert(state.draws[drawn]);
+        drawn_set.push(state.draws[drawn]);
         for board in 0..state.boards.len() {
             if state.check_board(board, &drawn_set) {
                 board_win = board;
@@ -75,10 +70,10 @@ pub fn part2(lines: Vec<String>) -> String {
     let mut board_win: usize = 0;
     let mut current_drawn: usize = 9999;
     let mut won: Vec<bool> = vec![false; state.boards.clone().len()];
-    let mut drawn_set = HashSet::new();
+    let mut drawn_set = vec![];
     'drawn: for drawn in 0..state.draws.len() {
         current_drawn = drawn;
-        drawn_set.insert(state.draws[drawn]);
+        drawn_set.push(state.draws[drawn]);
         for board in 0..state.boards.len() {
             if won[board] {
                 continue;
