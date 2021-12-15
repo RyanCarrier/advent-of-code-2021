@@ -1,5 +1,5 @@
 use core::panic;
-use std::io::Read;
+use std::collections::HashSet;
 
 #[derive(Debug, Clone)]
 struct State {
@@ -17,11 +17,11 @@ impl State {
             .fold(0, |sum, x| sum + *x as u64);
         sum_total
     }
-    fn check_board(&self, draw_depth: usize, board: usize, draws: &Vec<u8>) -> bool {
+    fn check_board(&self, board: usize, draws: &HashSet<u8>) -> bool {
         'x: for x in 0..self.n {
             for y in 0..self.n {
                 let board_item = &self.boards[board][x * self.n + y];
-                if draws.binary_search(&board_item).is_err() {
+                if !draws.contains(board_item) {
                     continue 'x;
                 }
             }
@@ -31,7 +31,7 @@ impl State {
         'y: for y in 0..self.n {
             for x in 0..self.n {
                 let board_item = &self.boards[board][x * self.n + y];
-                if draws.binary_search(&board_item).is_err() {
+                if !draws.contains(board_item) {
                     continue 'y;
                 }
             }
@@ -46,14 +46,12 @@ pub fn part1(lines: Vec<String>) -> String {
     let state = import(lines);
     let mut board_win: usize = 0;
     let mut current_drawn: usize = 9999;
-
-    let mut sorted_drawn: Vec<u8> = vec![];
+    let mut drawn_set = HashSet::new();
     'drawn: for drawn in 0..state.draws.len() {
         current_drawn = drawn;
-        sorted_drawn.push(state.draws[drawn]);
-        sorted_drawn.sort_unstable();
+        drawn_set.insert(state.draws[drawn]);
         for board in 0..state.boards.len() {
-            if state.check_board(drawn, board, &sorted_drawn) {
+            if state.check_board(board, &drawn_set) {
                 board_win = board;
                 break 'drawn;
             }
@@ -77,16 +75,15 @@ pub fn part2(lines: Vec<String>) -> String {
     let mut board_win: usize = 0;
     let mut current_drawn: usize = 9999;
     let mut won: Vec<bool> = vec![false; state.boards.clone().len()];
-    let mut sorted_drawn: Vec<u8> = vec![];
+    let mut drawn_set = HashSet::new();
     'drawn: for drawn in 0..state.draws.len() {
         current_drawn = drawn;
-        sorted_drawn.push(state.draws[drawn]);
-        sorted_drawn.sort_unstable();
+        drawn_set.insert(state.draws[drawn]);
         for board in 0..state.boards.len() {
             if won[board] {
                 continue;
             }
-            if state.check_board(drawn, board, &sorted_drawn) {
+            if state.check_board(board, &drawn_set) {
                 board_win = board;
                 won[board] = true;
                 if won.iter().all(|x| *x) {
