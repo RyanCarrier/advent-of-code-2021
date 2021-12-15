@@ -71,6 +71,9 @@ fn process_args(fns: Vec<[fn(Vec<String>) -> String; 2]>) {
             };
             return bench_specific(fns, day, repeats);
         }
+        "test" => {
+            return run_test(fns, day);
+        }
         _ => {
             match &args[2].parse::<usize>() {
                 Ok(part) => {
@@ -106,7 +109,18 @@ fn run_specific(fns: Vec<[fn(Vec<String>) -> String; 2]>, day: usize) {
         util::format_duration(part2_duration)
     );
 }
-
+fn run_test(fns: Vec<[fn(Vec<String>) -> String; 2]>, day: usize) {
+    let input = util::get_test_from_file(day);
+    let start = Instant::now();
+    let result = fns[day - 1][0](input);
+    let duration = start.elapsed();
+    println!(
+        "day{}test-part1:\t{}\nCompleted in {}",
+        day,
+        result,
+        util::format_duration(duration),
+    );
+}
 fn run_single(fns: Vec<[fn(Vec<String>) -> String; 2]>, day: usize, part: usize) {
     let input = util::get_from_file(day);
     let start = Instant::now();
