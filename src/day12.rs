@@ -5,7 +5,7 @@ struct Path {
 }
 
 struct Graph {
-    arc_list: Vec<Vec<u32>>,
+    arc_list: Vec<Vec<u8>>,
     small: Vec<bool>,
 }
 
@@ -22,7 +22,7 @@ impl Graph {
         total
     }
 
-    fn path_continue(&self, node_arcs: &Vec<u32>, path: &Path, total: &mut u32) {
+    fn path_continue(&self, node_arcs: &Vec<u8>, path: &Path, total: &mut u32) {
         for arc in node_arcs {
             if *arc == 1 {
                 *total += 1;
@@ -83,10 +83,10 @@ fn import(lines: Vec<String>) -> Graph {
             map.len() - 1
         };
         if v2n != 0 {
-            graph.arc_list[v1n].push(v2n as u32);
+            graph.arc_list[v1n].push(v2n as u8);
         }
         if v1n != 0 {
-            graph.arc_list[v2n].push(v1n as u32);
+            graph.arc_list[v2n].push(v1n as u8);
         }
     });
     graph
