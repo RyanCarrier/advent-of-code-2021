@@ -155,14 +155,13 @@ impl Day15 {
         }
     }
 }
+
 pub fn part1(lines: Vec<String>) -> String {
-    let mut data = Day15::new(lines.clone());
-    let risk = data.find_path();
-    let mut data2 = Day15::new_pt2(lines);
-    let risk2 = data2.find_path();
-    let ret = format!("p1: {}, p2: {}", risk, risk2);
-    ret
+    let mut data = Day15::new(lines);
+    format!("p1: {}", data.find_path())
 }
-pub fn part2(_: Vec<String>) -> String {
-    String::from("NA - part 1")
+
+pub fn part2(lines: Vec<String>) -> String {
+    let mut data2 = Day15::new_pt2(lines);
+    format!("p2: {}", data2.find_path())
 }
