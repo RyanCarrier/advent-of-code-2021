@@ -1,13 +1,11 @@
-struct Day17 {
-    result: Vec<u8>,
-    hw: Vec<Vec<u8>>,
-}
-
 //255 = [
 // 254=]
 const OPEN: u8 = 255_u8;
 const CLOSE: u8 = 254_u8;
-
+struct Day17 {
+    result: Vec<u8>,
+    hw: Vec<Vec<u8>>,
+}
 impl Day17 {
     fn new(lines: Vec<String>) -> Self {
         Day17 {
@@ -194,11 +192,191 @@ fn format_number_usize(number: &Vec<usize>) -> String {
     })
 }
 pub fn part1(lines: Vec<String>) -> String {
-    let mut state = Day17::new(lines);
-    state.add_all();
-    format!("{}", state.magnitude())
+    // let mut state = Day17::new(lines);
+    // state.add_all();
+    // format!("{}", state.magnitude())
+    let mut state = Day17A2::new(lines);
+    // state.add_all();
+    println!("{}", state.hw[0].to_string());
+    format!("{}", "")
 }
 pub fn part2(lines: Vec<String>) -> String {
     let mut state = Day17::new(lines);
     format!("{}", state.find_largest())
+}
+
+struct Value {
+    val: Option<u8>,
+    l: Option<Box<Value>>,
+    r: Option<Box<Value>>,
+}
+impl Value {
+    fn empty() -> Self {
+        Value {
+            val: None,
+            l: None,
+            r: None,
+        }
+    }
+    fn push_any(&mut self, v: u8) -> Option<()> {
+        // println!("insert:{}", v);
+        if self.is_empty() && v < OPEN {
+            println!("inserting val:{}", v);
+            self.val = Some(v);
+            return Some(());
+        }
+        if self.val.is_some() {
+            // println!("returning:{}", v);
+            return None;
+        }
+        match self.l.as_mut() {
+            Some(val) => {
+                let result = val.push_any(v);
+                if result.is_some() {
+                    return result;
+                }
+            }
+            None => {
+                // println!("PRE NEW LEFT:{}", v);
+                if v == OPEN {
+                    self.l_update(Value::empty());
+                    // println!("NEW LEFT:{}", v);
+                    return Some(());
+                }
+            }
+        }
+
+        match self.r.as_mut() {
+            Some(val) => {
+                let result = val.push_any(v);
+                if result.is_some() {
+                    return result;
+                }
+            }
+            None => {
+                // println!("PRE NEW RIGHT:{}", v);
+                if v == OPEN {
+                    self.r_update(Value::empty());
+                    // println!("NEW RIGHT:{}", v);
+                    return Some(());
+                }
+            }
+        }
+        return None;
+    }
+    fn push_branch(&mut self) -> Option<()> {
+        self.push_any(OPEN)
+    }
+    fn push(&mut self, v: u8) -> Option<()> {
+        self.push_any(v)
+    }
+    fn is_empty(&self) -> bool {
+        self.l.is_none() && self.r.is_none() && self.val.is_none()
+    }
+    fn l_update(&mut self, new: Value) {
+        self.l = Some(Box::new(new));
+    }
+    fn r_update(&mut self, new: Value) {
+        self.r = Some(Box::new(new));
+    }
+    fn magnitude(&mut self) -> usize {
+        let sv = self.val.clone();
+        match sv {
+            Some(v) => v as usize,
+            None => {
+                let mut total = 0;
+                match self.l {
+                    Some(ref mut v) => total += 3 * v.magnitude(),
+                    None => panic!("missing node"),
+                }
+                match self.r {
+                    Some(ref mut v) => total += 2 * v.magnitude(),
+                    None => panic!("missing node"),
+                }
+                total
+            }
+        }
+    }
+    fn to_string(&self) -> String {
+        if self.val.is_some() {
+            return self.val.unwrap().to_string();
+        }
+        if self.l.is_none() || self.r.is_none() {
+            return format!(
+                "[{},{}]",
+                if self.l.is_some() { "S" } else { "X" },
+                if self.r.is_some() { "S" } else { "X" }
+            );
+        }
+        format!(
+            "[{},{}]",
+            self.l.as_ref().unwrap().to_string(),
+            self.r.as_ref().unwrap().to_string()
+        )
+    }
+}
+struct Day17A2 {
+    result: Value,
+    hw: Vec<Value>,
+}
+impl Day17A2 {
+    // fn new(lines: Vec<String>) -> Self {
+    //     let mut hw = vec![];
+    //     for l in &lines {
+    //         let mut root = Value::empty();
+    //         let mut stack: Vec<&Value> = vec![&root];
+    //         for c in l.chars() {
+    //             match c {
+    //                 '[' => {
+    //                     let new = Value::empty();
+    //                     match stack.last_mut() {
+    //                         Some(ref mut lm) => {
+    //                             stack.push(&new);
+    //                             if lm.l.is_none() {
+    //                                 lm.l_update(new);
+    //                             } else {
+    //                                 lm.r_update(new);
+    //                             }
+    //                         }
+    //                         None => {}
+    //                     }
+    //                 }
+    //                 ']' => {
+    //                     stack.pop();
+    //                 }
+    //                 '0'..='9' => {
+    //                     let mut lm = stack.last_mut().unwrap();
+    //                     lm.val = Some(c.to_digit(10).unwrap() as u8);
+    //                     stack.pop();
+    //                 }
+    //                 _ => {}
+    //             }
+    //         }
+    //         hw.push(root);
+    //     }
+    fn new(lines: Vec<String>) -> Self {
+        let mut hw = vec![];
+        for l in &lines {
+            let mut root = Value::empty();
+            for c in l.chars() {
+                match c {
+                    '[' => {
+                        root.push_branch();
+                    }
+                    ']' => {}
+                    '0'..='9' => {
+                        root.push(c.to_digit(10).unwrap() as u8);
+                    }
+                    _ => {}
+                }
+            }
+            println!("root:{}", root.to_string());
+            hw.push(root);
+        }
+
+        Day17A2 {
+            result: Value::empty(),
+            hw: hw,
+        }
+    }
 }
